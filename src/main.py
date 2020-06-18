@@ -1,4 +1,7 @@
 from src import preprocess, utils, data, configs
+import warnings
+
+warnings.filterwarnings("ignore")
 
 if __name__ == '__main__':
     if configs.compression:

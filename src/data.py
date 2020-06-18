@@ -2,6 +2,7 @@ from src import configs
 
 import pandas as pd
 import numpy as np
+import torch
 from torch.utils.data import Dataset, DataLoader
 from sklearn.model_selection import GroupKFold
 
@@ -32,6 +33,11 @@ class TReNDsDataset(Dataset):
         self.fold_index = fold_index
         self.gkf = GroupKFold(n_splits=3)  # groupkfold on id --> same patient never in same fold
         self.all_samples = []
+
+        if self.mode == 'train':
+            self.augment = True
+        else:
+            self.augment = False
 
         train = pd.read_csv(configs.labels).sort_values(by='Id')
         train['isTrain'] = True
@@ -96,5 +102,20 @@ class TReNDsDataset(Dataset):
     def __len__(self):
         return len(self.all_samples)
 
-    def __getitem__(self, item):
-        raise NotImplementedError
+    def __getitem__(self, idx):
+        if self.mode == 'train' or self.mode == 'val':
+            id, filename, tabular, labels = self.all_samples[idx]
+            img = np.load(filename)['arr_0'].astype(np.float32)
+            img = np.reshape(img, (1, img.shape[0], img.shape[1], img.shape[2]))
+
+            if self.augment:  # image augmentations to be implemented
+                pass
+
+            return torch.FloatTensor(img), torch.FloatTensor(tabular), torch.FloatTensor(labels)
+
+        elif self.mode == 'test':
+            id, filename, tabular = self.all_samples[idx]
+            img = np.load(filename)['arr_0'].astype(np.float32)
+            img = np.reshape(img, (1, img.shape[0], img.shape[1], img.shape[2]))
+
+            return torch.FloatTensor(img), torch.FloatTensor(tabular)
