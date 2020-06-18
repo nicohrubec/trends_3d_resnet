@@ -12,3 +12,12 @@ loadings_file = data_dir / 'loading.csv'
 site2 = data_dir / 'reveal_ID_site2.csv'
 labels = data_dir / 'train_scores.csv'
 sample_sub = data_dir / 'sample_submission.csv'
+fnc_matrix = data_dir / 'fnc_matrix.csv'
+
+
+# hyperparameters
+compression = False
+calc_fnc_matrix = False
+SEED = 0
+mode = 'train'  # train or test phase
+folds = [0]  # list of folds to train on --> provide n indices from 0 to n_splits-1
