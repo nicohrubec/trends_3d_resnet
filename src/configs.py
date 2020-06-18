@@ -21,3 +21,6 @@ calc_fnc_matrix = False
 SEED = 0
 mode = 'train'  # train or test phase
 folds = [0]  # list of folds to train on --> provide n indices from 0 to n_splits-1
+train_batch_size = 64
+test_batch_size = train_batch_size * 4
+num_workers = 4
