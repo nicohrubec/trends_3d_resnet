@@ -5,13 +5,13 @@ import torch.optim as optim
 from torch.utils.tensorboard import SummaryWriter
 
 from src import configs
-from src.model import Baseline
+from src.model import BaselineTab
 
 
 def train_fold(train_loader, val_loader):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     criterion = nn.MSELoss()  # TODO: Implement competition metric.
-    model = Baseline().to(device)
+    model = BaselineTab().to(device)
     optimizer = optim.Adam(model.parameters(), lr=configs.lr, weight_decay=1e-5)
 
     # training
@@ -21,13 +21,12 @@ def train_fold(train_loader, val_loader):
         val_loss = 0.0
 
         for i, batch_data in enumerate(train_loader):
-            if i > 0:
-                break
-            img, tab, label = batch_data
-            img, tab, label = img.to(device), tab.to(device), label.to(device)
+            print(i/len(train_loader))
+            tab, label = batch_data
+            tab, label = tab.to(device), label.to(device)
 
             optimizer.zero_grad()
-            logits = model(img, tab)
+            logits = model(tab)
             loss = criterion(logits[label==label], label[label==label])
             loss.backward()
             optimizer.step()
