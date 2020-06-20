@@ -34,6 +34,6 @@ def train_fold(train_loader, val_loader):
             trn_loss += loss.item() / len(train_loader)
 
         with torch.no_grad():
-            print("Train loss: ", trn_loss)
+            print("Train loss: {:.4f}".format(trn_loss))
 
 
