@@ -42,7 +42,7 @@ class BaselineTab(torch.nn.Module):
 
     def __init__(self):
         super(BaselineTab, self).__init__()
-        self.tab_lin1 = nn.Linear(79, 128)
+        self.tab_lin1 = nn.Linear(479, 128)
         self.tab_lin2 = nn.Linear(128, 128)
 
         self.out = nn.Linear(128, 5)

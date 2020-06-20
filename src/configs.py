@@ -22,7 +22,7 @@ test_schaefer_npy = data_dir / 'test_rois.npy'
 # hyperparameters
 compression = False
 calc_fnc_matrix = False
-preprocess_schaefer = True
+preprocess_schaefer = False
 SEED = 0
 mode = 'train'  # train or test phase
 folds = [0]  # list of folds to train on --> provide n indices from 0 to n_splits-1

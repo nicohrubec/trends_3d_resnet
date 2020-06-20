@@ -43,6 +43,8 @@ class TReNDsDataset(Dataset):
         train['isTrain'] = True
         loadings = pd.read_csv(configs.loadings_file)
         fncs = pd.read_csv(configs.fnc_matrix)
+        schaefer_train = np.load(configs.train_schaefer_npy)
+        schaefer_test = np.load(configs.test_schaefer_npy)
         targets = ['age', 'domain1_var1', 'domain1_var2', 'domain2_var1', 'domain2_var2']
         tabular_features = list(fncs.columns) + list(loadings.columns[1:])
 
@@ -71,6 +73,7 @@ class TReNDsDataset(Dataset):
             # select samples and split into subsets --> id, tabular, labels
             df = df.iloc[idx]
             df_tabular = np.asarray(df[tabular_features])
+            df_tabular = np.hstack((df_tabular, schaefer_train[idx]))
             df_labels = np.asarray(df[targets])
             df_id = np.asarray(df['Id'])
 
@@ -87,6 +90,7 @@ class TReNDsDataset(Dataset):
 
         elif mode == 'test':
             test_df_tabular = np.asarray(test_df[tabular_features])
+            test_df_tabular = np.hstack((test_df_tabular, schaefer_test))
             test_df_id = np.asarray(test_df['Id'])
 
             component_counter = 0
