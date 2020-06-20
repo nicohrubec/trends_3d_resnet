@@ -84,7 +84,7 @@ class TReNDsDataset(Dataset):
                 filename = configs.data_dir / 'fMRI_train_npy' / (str(df_id[i])+'_'+str(component_counter)+'.npz')
                 self.all_samples.append([df_id[i], filename, df_tabular[i], df_labels[i]])
 
-                if i < 52:
+                if component_counter < 52:
                     component_counter += 1
                 else:
                     component_counter = 0
@@ -99,7 +99,7 @@ class TReNDsDataset(Dataset):
                 filename = configs.data_dir / 'fMRI_test_npy' / (str(test_df_id[i]) + '_' + str(component_counter) + '.npz')
                 self.all_samples.append([test_df_id[i], filename, test_df_tabular[i]])
 
-                if i < 52:
+                if component_counter < 52:
                     component_counter += 1
                 else:
                     component_counter = 0
