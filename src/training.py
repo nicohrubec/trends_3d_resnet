@@ -29,6 +29,7 @@ def train_fold(train_loader, val_loader):
             tab, label = batch_data
             tab, label = tab.to(device), label.to(device)
 
+            model.train()
             optimizer.zero_grad()
             logits = model(tab)
             loss = criterion(logits, label)
@@ -42,6 +43,7 @@ def train_fold(train_loader, val_loader):
                 tab, label = val_batch_data
                 tab, label = tab.to(device), label.to(device)
 
+                model.eval()
                 val_logits = model(tab)
                 valid_loss = criterion(val_logits, label)
 
