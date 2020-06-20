@@ -58,3 +58,16 @@ def calc_fnc_matrix():
     features = pd.DataFrame(data=features, columns=net_set)
     path = configs.data_dir / 'fnc_matrix.csv'
     features.to_csv(path, index=False)
+
+
+def transform_schaefer():
+    train = pd.read_csv(configs.train_schaefer)
+    test = pd.read_csv(configs.test_schaefer)
+    feat_cols = [col for col in train.columns if col != 'Id']
+
+    train_npy = train[feat_cols].values.reshape(-1, 400)
+    train_path = configs.data_dir / 'train_rois.npy'
+    np.save(train_path, train_npy)
+    test_npy = test[feat_cols].values.reshape(-1, 400)
+    test_path = configs.data_dir / 'test_rois.npy'
+    np.save(test_path, test_npy)

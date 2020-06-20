@@ -8,6 +8,8 @@ if __name__ == '__main__':
         preprocess.compress_images(mode=configs.mode)
     if configs.calc_fnc_matrix:
         preprocess.calc_fnc_matrix()  # extract ordered fnc matrix for later merging here
+    if configs.preprocess_schaefer:
+        preprocess.transform_schaefer()
 
     utils.set_seed(configs.SEED)
 

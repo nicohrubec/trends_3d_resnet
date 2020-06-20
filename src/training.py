@@ -21,7 +21,6 @@ def train_fold(train_loader, val_loader):
         val_loss = 0.0
 
         for i, batch_data in enumerate(train_loader):
-            print(i/len(train_loader))
             tab, label = batch_data
             tab, label = tab.to(device), label.to(device)
 

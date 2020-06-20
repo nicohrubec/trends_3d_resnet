@@ -13,16 +13,21 @@ site2 = data_dir / 'reveal_ID_site2.csv'
 labels = data_dir / 'train_scores.csv'
 sample_sub = data_dir / 'sample_submission.csv'
 fnc_matrix = data_dir / 'fnc_matrix.csv'
+train_schaefer = data_dir / 'training_data_schaefer18_400.csv'
+test_schaefer = data_dir / 'test_data_schaefer18_400.csv'
+train_schaefer_npy = data_dir / 'train_rois.npy'
+test_schaefer_npy = data_dir / 'test_rois.npy'
 
 
 # hyperparameters
 compression = False
 calc_fnc_matrix = False
+preprocess_schaefer = True
 SEED = 0
 mode = 'train'  # train or test phase
 folds = [0]  # list of folds to train on --> provide n indices from 0 to n_splits-1
-train_batch_size = 2
+train_batch_size = 64
 test_batch_size = train_batch_size * 4
-num_workers = 4
+num_workers = 1
 lr = .0003
 epochs = 10
