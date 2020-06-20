@@ -30,4 +30,4 @@ train_batch_size = 64
 test_batch_size = train_batch_size * 4
 num_workers = 1
 lr = .0003
-epochs = 10
+epochs = 20
