@@ -60,6 +60,7 @@ class TReNDsDataset(Dataset):
         df.drop('isTrain', axis=1, inplace=True)
         test_df = data[data.isTrain == False]
         test_df.drop(targets+['isTrain'], inplace=True, axis=1)
+        df.dropna(inplace=True)
 
         if mode == 'train' or mode == 'val':
             # select training or validation set for current fold

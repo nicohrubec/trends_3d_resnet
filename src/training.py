@@ -6,11 +6,12 @@ from torch.utils.tensorboard import SummaryWriter
 
 from src import configs
 from src.model import BaselineTab
+from src.utils import weighted_nae
 
 
 def train_fold(train_loader, val_loader):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    criterion = nn.MSELoss()  # TODO: Implement competition metric.
+    criterion = weighted_nae
     model = BaselineTab().to(device)
     optimizer = optim.Adam(model.parameters(), lr=configs.lr, weight_decay=1e-5)
 
@@ -26,9 +27,13 @@ def train_fold(train_loader, val_loader):
 
             optimizer.zero_grad()
             logits = model(tab)
-            loss = criterion(logits[label==label], label[label==label])
+            loss = criterion(logits, label)
             loss.backward()
             optimizer.step()
-            print(loss)
+
+            trn_loss += loss.item() / len(train_loader)
+
+        with torch.no_grad():
+            print("Train loss: ", trn_loss)
 
 
