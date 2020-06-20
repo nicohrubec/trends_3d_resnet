@@ -34,6 +34,16 @@ def train_fold(train_loader, val_loader):
             trn_loss += loss.item() / len(train_loader)
 
         with torch.no_grad():
+            for i_val, val_batch_data in enumerate(val_loader):
+                tab, label = val_batch_data
+                tab, label = tab.to(device), label.to(device)
+
+                val_logits = model(tab)
+                valid_loss = criterion(val_logits, label)
+
+                val_loss += valid_loss.item() / len(val_loader)
+
             print("Train loss: {:.4f}".format(trn_loss))
+            print("Val loss: {:.4f}".format(val_loss))
 
 
