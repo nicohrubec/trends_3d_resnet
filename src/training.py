@@ -3,10 +3,11 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.tensorboard import SummaryWriter
+import numpy as np
 
 from src import configs
 from src.model import BaselineTab
-from src.utils import weighted_nae
+from src.utils import weighted_nae, weighted_nae_npy
 
 
 def train_fold(train_loader, val_loader):
@@ -20,6 +21,9 @@ def train_fold(train_loader, val_loader):
         print("Training epoch ", epoch+1)
         trn_loss = 0.0
         val_loss = 0.0
+
+        oof = []
+        oof_targets = []
 
         for i, batch_data in enumerate(train_loader):
             tab, label = batch_data
@@ -43,7 +47,23 @@ def train_fold(train_loader, val_loader):
 
                 val_loss += valid_loss.item() / len(val_loader)
 
+                oof.append(val_logits.data.cpu().numpy())
+                oof_targets.append(label.data.cpu().numpy())
+
+            # prepare mean over components
+            oof = np.concatenate(oof, axis=0)
+            oof = oof.reshape((-1, 53, 5))
+            oof = np.mean(oof, axis=1)
+            oof_targets = np.concatenate(oof_targets, axis=0)
+            oof_targets = oof_targets.reshape((-1, 53, 5))
+            oof_targets = oof_targets[:, 0, :]
+
+            # validate with mean over components
+            score, domain_losses = weighted_nae_npy(oof_targets, oof)
+
             print("Train loss: {:.4f}".format(trn_loss))
             print("Val loss: {:.4f}".format(val_loss))
+            print("Mean val loss: {:.4f}".format(score))
+            print(domain_losses)
 
 
