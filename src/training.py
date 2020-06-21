@@ -7,14 +7,14 @@ import numpy as np
 from apex import amp
 
 from src import configs
-from src.model import BaselineTab
+from src.model import BaselineTab, BaselineResnet
 from src.utils import weighted_nae, weighted_nae_npy
 
 
 def train_fold(train_loader, val_loader):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     criterion = weighted_nae
-    model = BaselineTab().to(device)
+    model = BaselineResnet().to(device)
     optimizer = optim.Adam(model.parameters(), lr=configs.lr, weight_decay=1e-5)
 
     if configs.use_amp:

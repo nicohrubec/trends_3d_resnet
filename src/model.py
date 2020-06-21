@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from src import resnet
 
 class Baseline(torch.nn.Module):
 
@@ -74,5 +75,34 @@ class BaselineTab(torch.nn.Module):
 
         out = torch.cat((img, tab), 1)
         out = self.out(out)
+
+        return out
+
+
+class BaselineResnet(torch.nn.Module):
+
+    def __init__(self):
+        super(BaselineResnet, self).__init__()
+        self.resnet = resnet.resnet3d_10(shortcut_type='B')
+        self.tab_lin1 = nn.Linear(479, 1024)
+        self.tab_lin2 = nn.Linear(1024, 1024)
+        self.tab_lin3 = nn.Linear(1024, 1024)
+        self.tab_lin4 = nn.Linear(2048, 2048)
+
+        self.out = nn.Linear(2048, 5)
+
+    def forward(self, img, tab):
+        img = self.resnet(img)
+
+        tab = self.tab_lin1(tab)
+        tab = F.relu(tab)
+        tab = self.tab_lin2(tab)
+        tab = F.relu(tab)
+        tab = self.tab_lin3(tab)
+        tab = F.relu(tab)
+        x = torch.cat((tab, img), 1)
+        x = self.tab_lin4(x)
+        x = F.relu(x)
+        out = self.out(x)
 
         return out
