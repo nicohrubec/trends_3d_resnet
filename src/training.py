@@ -38,9 +38,9 @@ def train_fold(train_loader, val_loader):
 
             model.train()
             optimizer.zero_grad()
-            logits = model(tab)
+            logits = model(img, tab)
             loss = criterion(logits, label)
-            
+
             if configs.use_amp:
                 with amp.scale_loss(loss, optimizer) as scaled_loss:
                     scaled_loss.backward()
@@ -57,7 +57,7 @@ def train_fold(train_loader, val_loader):
                 img, tab, label = img.to(device), tab.to(device), label.to(device)
 
                 model.eval()
-                val_logits = model(tab)
+                val_logits = model(img, tab)
                 valid_loss = criterion(val_logits, label)
 
                 val_loss += valid_loss.item() / len(val_loader)

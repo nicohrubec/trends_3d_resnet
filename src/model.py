@@ -42,14 +42,27 @@ class BaselineTab(torch.nn.Module):
 
     def __init__(self):
         super(BaselineTab, self).__init__()
-        self.tab_lin1 = nn.Linear(479, 2048)
-        self.tab_lin2 = nn.Linear(2048, 2048)
-        self.tab_lin3 = nn.Linear(2048, 2048)
-        self.tab_lin4 = nn.Linear(2048, 2048)
+        self.img_conv1 = nn.Conv3d(in_channels=1, out_channels=32, kernel_size=3, padding=1)
+        self.img_conv2 = nn.Conv3d(in_channels=32, out_channels=64, kernel_size=3, padding=1)
+        self.maxpool = nn.MaxPool3d(kernel_size=3, stride=2, padding=1)
+        self.img_out = nn.Linear(64, 128)
+        self.tab_lin1 = nn.Linear(479, 1024)
+        self.tab_lin2 = nn.Linear(1024, 1024)
+        self.tab_lin3 = nn.Linear(1024, 1024)
+        self.tab_lin4 = nn.Linear(1024, 1024)
 
-        self.out = nn.Linear(2048, 5)
+        self.out = nn.Linear(1024+128, 5)
 
-    def forward(self, tab):
+    def forward(self, img, tab):
+        img = self.img_conv1(img)
+        img = self.maxpool(img)
+        img = F.relu(img)
+        img = self.img_conv2(img)
+        img = self.maxpool(img)
+        img = F.relu(img)
+        img = torch.squeeze(F.adaptive_avg_pool3d(img, (1, 1, 1)))
+        img = self.img_out(img)
+
         tab = self.tab_lin1(tab)
         tab = F.relu(tab)
         tab = self.tab_lin2(tab)
@@ -58,6 +71,8 @@ class BaselineTab(torch.nn.Module):
         tab = F.relu(tab)
         tab = self.tab_lin4(tab)
         tab = F.relu(tab)
-        out = self.out(tab)
+
+        out = torch.cat((img, tab), 1)
+        out = self.out(out)
 
         return out
