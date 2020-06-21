@@ -110,19 +110,17 @@ class TReNDsDataset(Dataset):
     def __getitem__(self, idx):
         if self.mode == 'train' or self.mode == 'val':
             id, filename, tabular, labels = self.all_samples[idx]
-            # img = np.load(filename)['arr_0'].astype(np.float32)
-            # img = np.reshape(img, (1, img.shape[0], img.shape[1], img.shape[2]))
+            img = np.load(filename)['arr_0'].astype(np.float32)
+            img = np.reshape(img, (1, img.shape[0], img.shape[1], img.shape[2]))
 
             if self.augment:  # image augmentations to be implemented
                 pass
 
-            # return torch.FloatTensor(img), torch.FloatTensor(tabular), torch.FloatTensor(labels)
-            return torch.FloatTensor(tabular), torch.FloatTensor(labels)
+            return torch.FloatTensor(img), torch.FloatTensor(tabular), torch.FloatTensor(labels)
 
         elif self.mode == 'test':
             id, filename, tabular = self.all_samples[idx]
-            # img = np.load(filename)['arr_0'].astype(np.float32)
-            # img = np.reshape(img, (1, img.shape[0], img.shape[1], img.shape[2]))
+            img = np.load(filename)['arr_0'].astype(np.float32)
+            img = np.reshape(img, (1, img.shape[0], img.shape[1], img.shape[2]))
 
-            # return torch.FloatTensor(img), torch.FloatTensor(tabular)
-            return torch.FloatTensor(tabular)
+            return torch.FloatTensor(img), torch.FloatTensor(tabular)

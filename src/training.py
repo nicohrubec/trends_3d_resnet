@@ -26,8 +26,8 @@ def train_fold(train_loader, val_loader):
         oof_targets = []
 
         for i, batch_data in enumerate(train_loader):
-            tab, label = batch_data
-            tab, label = tab.to(device), label.to(device)
+            img, tab, label = batch_data
+            img, tab, label = img.to(device), tab.to(device), label.to(device)
 
             model.train()
             optimizer.zero_grad()
@@ -40,8 +40,8 @@ def train_fold(train_loader, val_loader):
 
         with torch.no_grad():
             for i_val, val_batch_data in enumerate(val_loader):
-                tab, label = val_batch_data
-                tab, label = tab.to(device), label.to(device)
+                img, tab, label = val_batch_data
+                img, tab, label = img.to(device), tab.to(device), label.to(device)
 
                 model.eval()
                 val_logits = model(tab)
