@@ -15,8 +15,9 @@ if __name__ == '__main__':
 
     if configs.mode == 'train':
         for fold in configs.folds:
+            print("Training of fold {}".format(fold))
             train_loader, val_loader = data.get_dataloader(mode=configs.mode, fold_index=fold)
-            training.train_fold(train_loader, val_loader)
+            training.train_fold(train_loader, val_loader, fold_index=fold)
 
     elif configs.mode == 'test':
         test_loader = data.get_dataloader(mode=configs.mode)

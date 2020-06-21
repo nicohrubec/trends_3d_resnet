@@ -11,11 +11,13 @@ from src.model import BaselineTab, BaselineResnet
 from src.utils import weighted_nae, weighted_nae_npy
 
 
-def train_fold(train_loader, val_loader):
+def train_fold(train_loader, val_loader, fold_index):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     criterion = weighted_nae
     model = BaselineResnet().to(device)
     optimizer = optim.Adam(model.parameters(), lr=configs.lr, weight_decay=1e-5)
+    fold_dir = configs.model_dir / ('fold_{}'.format(fold_index))
+    fold_dir.mkdir(exist_ok=True)
 
     if configs.use_amp:
         model, optimizer = amp.initialize(
@@ -81,4 +83,6 @@ def train_fold(train_loader, val_loader):
             print("Mean val loss: {:.4f}".format(score))
             print(domain_losses)
 
-
+            # each epoch save model state dict
+            epoch_path = fold_dir / ('epoch_{}_loss_{:.4f}.pt'.format(epoch+1, valid_loss))
+            torch.save(model.state_dict(), epoch_path)
