@@ -4,6 +4,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.tensorboard import SummaryWriter
 import numpy as np
+from apex import amp
 
 from src import configs
 from src.model import BaselineTab
@@ -15,6 +16,12 @@ def train_fold(train_loader, val_loader):
     criterion = weighted_nae
     model = BaselineTab().to(device)
     optimizer = optim.Adam(model.parameters(), lr=configs.lr, weight_decay=1e-5)
+
+    if configs.use_amp:
+        model, optimizer = amp.initialize(
+            model, optimizer, opt_level='O2',
+            loss_scale='dynamic'
+        )
 
     # training
     for epoch in range(configs.epochs):
@@ -33,7 +40,13 @@ def train_fold(train_loader, val_loader):
             optimizer.zero_grad()
             logits = model(tab)
             loss = criterion(logits, label)
-            loss.backward()
+            
+            if configs.use_amp:
+                with amp.scale_loss(loss, optimizer) as scaled_loss:
+                    scaled_loss.backward()
+            else:
+                loss.backward()
+
             optimizer.step()
 
             trn_loss += loss.item() / len(train_loader)
