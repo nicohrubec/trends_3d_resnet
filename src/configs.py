@@ -1,7 +1,7 @@
 from pathlib import Path
 
 project_dir = Path.cwd().parent
-data_src = Path("D:/trends_files/")
+data_src = Path("/home/thomas/files/")
 data_dir = project_dir / 'data'
 model_dir = project_dir / 'models'
 sub_dir = project_dir / 'subs'
@@ -20,7 +20,7 @@ test_schaefer_npy = data_dir / 'test_rois.npy'
 
 
 # hyperparameters
-compression = False
+compression = True
 calc_fnc_matrix = False
 preprocess_schaefer = False
 use_amp = False

@@ -5,22 +5,29 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 from sklearn.preprocessing import StandardScaler
+import h5py
 
 
 def compress_images(mode='train'):
     if mode == 'train':
-        src_folder = configs.data_src / 'fMRI_train_npy'
-        tar_folder = configs.data_dir / 'fMRI_train_npy'
+        src_folder = configs.data_src / 'fMRI_train'
+        tar_folder = configs.data_src / 'fMRI_train_npy'
     elif mode == 'test':
-        src_folder = configs.data_src / 'fMRI_test_npy'
-        tar_folder = configs.data_dir / 'fMRI_test_npy'
+        src_folder = configs.data_src / 'fMRI_test'
+        tar_folder = configs.data_src / 'fMRI_test_npy'
 
     if not os.path.exists(tar_folder):
         os.mkdir(tar_folder)
 
     scaler = StandardScaler()
     for file in tqdm(os.listdir(src_folder)):
-        arr = np.load(src_folder / file)
+        
+        arr = h5py.File(src_folder / file, 'r').get('SM_feature').value
+        arr = np.float32(arr)
+        arr = arr.transpose((3,2,1,0))
+        #arr = np.load(src_folder / file)
+        #print(arr.dtype)
+        #print(arr.shape)
 
         for component_id in range(53): # there is 53 subcomponents
             component = arr[:, :, :, component_id]
