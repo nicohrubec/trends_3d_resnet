@@ -1,4 +1,4 @@
-from src import preprocess, utils, data, configs, training, eval
+from src import preprocess, utils, data, configs, training, eval, inference
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -26,5 +26,5 @@ if __name__ == '__main__':
             eval.eval_fold(val_loader, fold_index=fold)
 
         test_loader = data.get_dataloader(mode=configs.mode)
-
-
+        preds = inference.predict_test(test_loader)
+        utils.create_submission(preds)
