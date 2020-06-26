@@ -12,6 +12,7 @@ def eval_fold(val_loader, fold_index):
     model = BaselineTab().to(device)
 
     fold_dir = configs.submission_folder / ('fold_{}'.format(fold_index))
+    oof_sum = []
 
     if os.path.exists(fold_dir):  # check if directory is properly setup
         for model_checkpoint in os.listdir(fold_dir):
@@ -45,3 +46,15 @@ def eval_fold(val_loader, fold_index):
                 print("Eval fold {}:".format(fold_index))
                 print("Mean val loss: {:.4f}".format(score))
                 print(domain_losses)
+
+            oof_sum.append(oof)
+
+        # stack all model preds for fold
+        oof_sum = np.concatenate(oof_sum, axis=1)
+        oof_sum = np.reshape(oof_sum, (len(oof_sum), -1, 5))
+        oof_sum = np.mean(oof_sum, axis=1)  # ensemble all models with equal contribution
+
+        score, domain_losses = weighted_nae_npy(oof_targets, oof_sum)
+        print("Eval fold {}:".format(fold_index))
+        print("Mean val loss: {:.4f}".format(score))
+        print(domain_losses)
