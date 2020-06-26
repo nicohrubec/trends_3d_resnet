@@ -14,8 +14,10 @@ def eval_fold(val_loader, fold_index):
     fold_dir = configs.submission_folder / ('fold_{}'.format(fold_index))
     oof_sum = []
 
+    print("Eval fold {}:".format(fold_index))
+
     if os.path.exists(fold_dir):  # check if directory is properly setup
-        for model_checkpoint in os.listdir(fold_dir):
+        for i, model_checkpoint in enumerate(os.listdir(fold_dir)):
             model_checkpoint_path = fold_dir / model_checkpoint
             model.load_state_dict(torch.load(model_checkpoint_path), strict=False)
 
@@ -43,7 +45,7 @@ def eval_fold(val_loader, fold_index):
 
                 # validate with mean over components
                 score, domain_losses = weighted_nae_npy(oof_targets, oof)
-                print("Eval fold {}:".format(fold_index))
+                print("Eval model {} for fold {}:".format(i+1, fold_index))
                 print("Mean val loss: {:.4f}".format(score))
                 print(domain_losses)
 
@@ -55,6 +57,5 @@ def eval_fold(val_loader, fold_index):
         oof_sum = np.mean(oof_sum, axis=1)  # ensemble all models with equal contribution
 
         score, domain_losses = weighted_nae_npy(oof_targets, oof_sum)
-        print("Eval fold {}:".format(fold_index))
-        print("Mean val loss: {:.4f}".format(score))
+        print("Mean val loss for ensemble: {:.4f}".format(score))
         print(domain_losses)
