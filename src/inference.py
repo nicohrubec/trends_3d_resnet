@@ -21,8 +21,8 @@ def predict_test(test_loader):
 
             with torch.no_grad():
                 for i_test, test_batch_data in enumerate(test_loader):
-                    img, tab, label = test_batch_data
-                    img, tab, label = img.to(device), tab.to(device), label.to(device)
+                    img, tab = test_batch_data
+                    img, tab = img.to(device), tab.to(device)
 
                     model.eval()
                     test_logits = model(img, tab)
@@ -30,6 +30,8 @@ def predict_test(test_loader):
                     model_preds.append(test_logits.data.cpu().numpy())
 
                 model_preds = np.concatenate(model_preds, axis=0)
+                model_preds = model_preds.reshape((-1, 53, 5))
+                model_preds = np.mean(model_preds, axis=1)
 
             preds.append(model_preds)
 

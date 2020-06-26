@@ -31,8 +31,7 @@ def weighted_nae_npy(y_true, y_pred):
 
 
 def create_submission(preds):
-    targets = ['age', 'domain1_var1', 'domain1_var2', 'domain2_var1', 'domain2_var2']
     sample_sub = pd.read_csv(configs.sample_sub)
     sub_path = configs.submission_folder / 'submission.csv'
-    sample_sub[targets] = preds
+    sample_sub['Predicted'] = preds.flatten()
     sample_sub.to_csv(sub_path, index=False)
