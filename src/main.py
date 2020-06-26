@@ -1,4 +1,4 @@
-from src import preprocess, utils, data, configs, training
+from src import preprocess, utils, data, configs, training, eval
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -20,6 +20,11 @@ if __name__ == '__main__':
             training.train_fold(train_loader, val_loader, fold_index=fold)
 
     elif configs.mode == 'test':
+
+        for fold in [0, 1, 2]:
+            train_loader, val_loader = data.get_dataloader(mode='train', fold_index=fold)
+            eval.eval_fold(val_loader, fold_index=fold)
+
         test_loader = data.get_dataloader(mode=configs.mode)
 
 

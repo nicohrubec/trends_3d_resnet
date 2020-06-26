@@ -5,6 +5,7 @@ data_src = Path("D:/trends_files/")
 data_dir = project_dir / 'data'
 model_dir = project_dir / 'models'
 sub_dir = project_dir / 'subs'
+submission_folder = sub_dir / 'res_net10'
 
 fnc_file = data_dir / 'fnc.csv'
 fnc_match_file = data_dir / 'ICN_numbers.csv'
@@ -25,7 +26,7 @@ calc_fnc_matrix = False
 preprocess_schaefer = False
 use_amp = False
 SEED = 0
-mode = 'train'  # train or test phase
+mode = 'test'  # train or test phase
 folds = [0]  # list of folds to train on --> provide n indices from 0 to n_splits-1
 train_batch_size = 32
 test_batch_size = train_batch_size * 2
