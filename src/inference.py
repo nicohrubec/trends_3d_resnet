@@ -3,12 +3,12 @@ import torch
 import numpy as np
 
 from src import configs
-from src.model import BaselineTab
+from src.model import BaselineResnet
 
 
 def predict_test(test_loader):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    model = BaselineTab().to(device)
+    model = BaselineResnet().to(device)
     preds = []
 
     for fold_folder in os.listdir(configs.submission_folder):

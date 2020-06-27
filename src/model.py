@@ -84,7 +84,7 @@ class BaselineResnet(torch.nn.Module):
     def __init__(self):
         super(BaselineResnet, self).__init__()
         self.resnet = resnet.resnet3d_10(shortcut_type='B')
-        self.tab_lin1 = nn.Linear(479, 1024)
+        self.tab_lin1 = nn.Linear(79, 1024)
         self.tab_lin2 = nn.Linear(1024, 1024)
         self.tab_lin3 = nn.Linear(1024, 1024)
         self.tab_lin4 = nn.Linear(2048, 2048)
