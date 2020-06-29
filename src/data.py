@@ -43,6 +43,7 @@ class TReNDsDataset(Dataset):
         train['isTrain'] = True
         loadings = pd.read_csv(configs.loadings_file)
         fncs = pd.read_csv(configs.fnc_matrix)
+        site2 = pd.read_csv(configs.site2)
         targets = ['age', 'domain1_var1', 'domain1_var2', 'domain2_var1', 'domain2_var2']
         tabular_features = list(fncs.columns) + list(loadings.columns[1:])
 
@@ -59,6 +60,18 @@ class TReNDsDataset(Dataset):
         test_df = data[data.isTrain == False]
         test_df.drop(targets+['isTrain'], inplace=True, axis=1)
         df.dropna(inplace=True)
+
+        site2_df = test_df[test_df.Id.isin(site2.Id)][tabular_features]
+
+        # get statistics of site2
+        site2_means = site2_df.mean()
+        train_means = df[tabular_features].mean()
+        site2_std = site2_df.std()
+        train_std = df[tabular_features].std()
+
+        # standardize known site2 entries according to site1 statistics
+        site2_df = (site2_df + (train_means - site2_means)) * (train_std / site2_std)
+        test_df.loc[test_df.Id.isin(site2.Id), tabular_features] = site2_df
 
         if mode == 'train' or mode == 'val':
             # select training or validation set for current fold
